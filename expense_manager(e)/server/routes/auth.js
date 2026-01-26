@@ -1,19 +1,16 @@
 const router = require('express').Router();
-const User = require('../models/User.model');
+const User = require('../models/User.model'); // Ensure this matches your User model filename
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
     try {
-        // Map frontend "name" -> backend "userName" if needed, 
-        // or expect the frontend to send exact keys.
         const newUser = new User({
-            userName: req.body.userName || req.body.name,
-            emailAddress: req.body.emailAddress || req.body.email,
+            userName: req.body.userName,
+            emailAddress: req.body.emailAddress,
             password: req.body.password,
-            mobileNo: req.body.mobileNo || "0000000000", // Default if missing
-            profileImage: req.body.profileImage || "",
-            created: new Date(),
-            modified: new Date()
+            // Use the role from the form, or default to normal_user if missing
+            role: req.body.role || "normal_user", 
+            mobileNo: req.body.mobileNo || "0000000000"
         });
 
         const user = await newUser.save();
@@ -23,10 +20,10 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// POST /api/auth/login
+// POST /api/auth/login (Keep your existing login logic)
 router.post('/login', async (req, res) => {
     try {
-        const user = await User.findOne({ emailAddress: req.body.email });
+        const user = await User.findOne({ emailAddress: req.body.email }); // Note: emailAddress to match schema
         
         if (!user || user.password !== req.body.password) {
             return res.status(400).json("Invalid credentials");
@@ -37,6 +34,14 @@ router.post('/login', async (req, res) => {
     } catch (err) {
         res.status(500).json(err);
     }
+});
+
+// GET All Users (Keep this for the Dashboard)
+router.get('/', async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        res.status(200).json(users);
+    } catch (err) { res.status(500).json(err); }
 });
 
 module.exports = router;

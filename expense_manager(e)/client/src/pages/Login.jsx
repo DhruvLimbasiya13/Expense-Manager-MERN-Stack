@@ -1,57 +1,55 @@
 import { useState } from "react";
-import logo from "../assets/logo.png";
+import { postData } from "../services/api"; 
 
-function Login({ onLogin, users, onRegister }) {
+function Login({ onLogin }) {
   const [isRegistering, setIsRegistering] = useState(false);
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState(""); // Only for registration
+  const [name, setName] = useState(""); 
+  const [role, setRole] = useState("normal_user"); 
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (isRegistering) {
-      // --- REGISTER LOGIC ---
-      if (!name || !email || !password) {
-        setError("All fields are required.");
-        return;
-      }
-      
-      // Check if email already exists
-      const existingUser = users.find(u => u.email === email);
-      if (existingUser) {
-        setError("Email already registered. Please login.");
-        return;
-      }
-
-      const newUser = { name, email, password };
-      onRegister(newUser);
-
-    } else {
-      // --- LOGIN LOGIC ---
-      const user = users.find(
-        (u) => u.email === email && u.password === password
-      );
-
-      if (user) {
-        onLogin(user);
+    try {
+      if (isRegistering) {
+        // --- REGISTER API CALL ---
+        // CRITICAL FIX: Mapping frontend state to Backend Schema keys
+        const newUser = { 
+            userName: name,       // Backend expects 'userName'
+            emailAddress: email,  // Backend expects 'emailAddress'
+            password: password, 
+            role: role,
+            mobileNo: "0000000000" // Dummy value
+        };
+        
+        await postData('/auth/register', newUser);
+        
+        alert("Registration Successful! Please Login.");
+        setIsRegistering(false);
       } else {
-        setError("Invalid email or password");
+        // --- LOGIN API CALL ---
+        const credentials = { email: email, password: password };
+        const user = await postData('/auth/login', credentials);
+        onLogin(user);
       }
+    } catch (err) {
+      console.error(err);
+      setError("Request Failed. Check connection or credentials.");
     }
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <div className="card border-0 shadow-lg p-4" style={{ maxWidth: "400px", width: "100%" }}>
+        
         <div className="text-center mb-4">
-            <img src={logo} alt="Logo" width="60" className="mb-3 rounded" />
-            <h3 className="fw-bold text-dark">Expensify</h3>
+            <h3 className="fw-bold text-primary">Expensify</h3>
             <p className="text-muted">
-              {isRegistering ? "Create your account" : "Manage your expenses efficiently"}
+              {isRegistering ? "Create your account" : "Manage your expenses"}
             </p>
         </div>
         
@@ -59,38 +57,38 @@ function Login({ onLogin, users, onRegister }) {
         
         <form onSubmit={handleSubmit}>
           {isRegistering && (
-            <div className="mb-3">
-              <label className="form-label fw-bold small">Full Name</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                autoFocus
-              />
-            </div>
+            <>
+                <div className="mb-3">
+                  <label className="form-label small fw-bold">Full Name</label>
+                  <input 
+                    type="text" className="form-control" placeholder="John Doe"
+                    value={name} onChange={e => setName(e.target.value)} required 
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label small fw-bold">Register As</label>
+                  <select className="form-select" value={role} onChange={(e) => setRole(e.target.value)}>
+                    <option value="normal_user">Employee</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+            </>
           )}
 
           <div className="mb-3">
-            <label className="form-label fw-bold small">Email Address</label>
-            <input
-              type="email"
-              className="form-control"
-              placeholder="name@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+            <label className="form-label small fw-bold">Email Address</label>
+            <input 
+              type="email" className="form-control" placeholder="name@example.com"
+              value={email} onChange={e => setEmail(e.target.value)} required 
             />
           </div>
           
           <div className="mb-4">
-            <label className="form-label fw-bold small">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+            <label className="form-label small fw-bold">Password</label>
+            <input 
+              type="password" className="form-control" placeholder="••••••••"
+              value={password} onChange={e => setPassword(e.target.value)} required 
             />
           </div>
           
@@ -108,9 +106,6 @@ function Login({ onLogin, users, onRegister }) {
             onClick={() => {
               setIsRegistering(!isRegistering);
               setError("");
-              setEmail("");
-              setPassword("");
-              setName("");
             }}
           >
             {isRegistering ? "Login here" : "Register now"}

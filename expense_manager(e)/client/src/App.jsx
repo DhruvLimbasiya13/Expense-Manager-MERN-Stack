@@ -1,47 +1,68 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { fetchData } from "./services/api"; // Import API Service
+import { fetchData } from "./services/api"; // Import the API service
 
-// Pages & Components
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
+import NotFound from "./pages/NotFound";
+
+import ExpenseList from "./pages/ExpenseList";
+import ExpenseAdd from "./pages/ExpenseAdd";
+import ExpenseEdit from "./pages/ExpenseEdit";
+
+import IncomeList from "./pages/IncomeList";
+import IncomeAdd from "./pages/IncomeAdd";
+import IncomeEdit from "./pages/IncomeEdit";
+
 import ProjectList from "./pages/ProjectList";
 import ProjectAdd from "./pages/ProjectAdd";
 import ProjectDetails from "./pages/ProjectDetails";
-import ExpenseList from "./pages/ExpenseList";
-import ExpenseAdd from "./pages/ExpenseAdd";
-import IncomeList from "./pages/IncomeList";
-import IncomeAdd from "./pages/IncomeAdd";
+
 import CategoryList from "./pages/CategoryList";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem("expensify_user");
-    return saved ? JSON.parse(saved) : null;
+    const savedUser = localStorage.getItem("expensify_user");
+    return savedUser ? JSON.parse(savedUser) : null;
   });
 
+  // Initialize state with empty arrays (Waiting for API)
   const [expenses, setExpenses] = useState([]);
   const [incomes, setIncomes] = useState([]);
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [peoples, setPeoples] = useState([]);
+  const [users, setUsers] = useState([]); // State for Users
 
-  // Fetch Data from Backend
+  // --- FETCH REAL DATA FROM DB ---
   useEffect(() => {
     if (currentUser) {
       const loadData = async () => {
-        const [exp, inc, proj, cat, sub, ppl] = await Promise.all([
-          fetchData('/expenses'),
-          fetchData('/incomes'),
-          fetchData('/projects'),
-          fetchData('/categories'),
-          fetchData('/subcategories'),
-          fetchData('/peoples')
-        ]);
-        setExpenses(exp); setIncomes(inc); setProjects(proj);
-        setCategories(cat); setSubCategories(sub); setPeoples(ppl);
+        try {
+          // Fetch everything in parallel
+          // We added fetchData("/auth") to get the list of users
+          const [exp, inc, proj, cat, sub, ppl, allUsers] = await Promise.all([
+            fetchData("/expenses"),
+            fetchData("/incomes"),
+            fetchData("/projects"),
+            fetchData("/categories"),
+            fetchData("/subcategories"),
+            fetchData("/peoples"),
+            fetchData("/auth"), // <--- NEW: Fetch Users from backend
+          ]);
+
+          setExpenses(exp);
+          setIncomes(inc);
+          setProjects(proj);
+          setCategories(cat);
+          setSubCategories(sub);
+          setPeoples(ppl);
+          setUsers(allUsers); // <--- FIX: This solves the "unused" error
+        } catch (error) {
+          console.error("Failed to load data:", error);
+        }
       };
       loadData();
     }
@@ -55,28 +76,146 @@ function App() {
   const handleLogout = () => {
     setCurrentUser(null);
     localStorage.removeItem("expensify_user");
-    setExpenses([]); setIncomes([]);
+    setExpenses([]);
+    setIncomes([]);
+    setUsers([]);
   };
 
-  if (!currentUser) return <Login onLogin={handleLogin} />;
+  // If not logged in, show Login page
+  if (!currentUser) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   return (
     <BrowserRouter>
       <Navbar currentUser={currentUser} onLogout={handleLogout} />
+
       <Routes>
-        <Route path="/" element={<Dashboard expenses={expenses} incomes={incomes} projects={projects} />} />
-        
+        <Route
+          path="/"
+          element={
+            <Dashboard
+              expenses={expenses}
+              incomes={incomes}
+              projects={projects}
+              categories={categories}
+              users={users} // Pass dynamic users to Dashboard
+              currentUser={currentUser}
+            />
+          }
+        />
+
+        {/* Expenses */}
+        <Route
+          path="/expenses"
+          element={
+            <ExpenseList
+              expenses={expenses}
+              projects={projects}
+              categories={categories}
+              currentUser={currentUser}
+              users={users} // Pass dynamic users to ExpenseList
+            />
+          }
+        />
+        <Route
+          path="/expenses/add"
+          element={
+            <ExpenseAdd
+              expenses={expenses}
+              setExpenses={setExpenses}
+              categories={categories}
+              subCategories={subCategories}
+              projects={projects}
+              peoples={peoples}
+              currentUser={currentUser}
+            />
+          }
+        />
+        <Route
+          path="/expenses/edit/:id"
+          element={
+            <ExpenseEdit
+              expenses={expenses}
+              setExpenses={setExpenses}
+              projects={projects}
+              categories={categories}
+              subCategories={subCategories}
+            />
+          }
+        />
+
+        {/* Incomes */}
+        <Route
+          path="/income"
+          element={
+            <IncomeList
+              incomes={incomes}
+              projects={projects}
+              categories={categories}
+              currentUser={currentUser}
+            />
+          }
+        />
+        <Route
+          path="/income/add"
+          element={
+            <IncomeAdd
+              incomes={incomes}
+              setIncomes={setIncomes}
+              categories={categories}
+              subCategories={subCategories}
+              projects={projects}
+              peoples={peoples}
+              currentUser={currentUser}
+            />
+          }
+        />
+        <Route
+          path="/income/edit/:id"
+          element={
+            <IncomeEdit
+              incomes={incomes}
+              setIncomes={setIncomes}
+              projects={projects}
+              categories={categories}
+              subCategories={subCategories}
+            />
+          }
+        />
+
+        {/* Projects */}
         <Route path="/projects" element={<ProjectList projects={projects} />} />
-        <Route path="/projects/add" element={<ProjectAdd projects={projects} setProjects={setProjects} currentUser={currentUser} />} />
-        <Route path="/projects/:id" element={<ProjectDetails projects={projects} expenses={expenses} incomes={incomes} categories={categories} />} />
+        <Route
+          path="/projects/add"
+          element={<ProjectAdd projects={projects} setProjects={setProjects} />}
+        />
+        <Route
+          path="/projects/:id"
+          element={
+            <ProjectDetails
+              projects={projects}
+              expenses={expenses}
+              incomes={incomes}
+              categories={categories}
+            />
+          }
+        />
 
-        <Route path="/expenses" element={<ExpenseList expenses={expenses} projects={projects} categories={categories} currentUser={currentUser} />} />
-        <Route path="/expenses/add" element={<ExpenseAdd expenses={expenses} setExpenses={setExpenses} projects={projects} categories={categories} subCategories={subCategories} peoples={peoples} currentUser={currentUser} />} />
+        {/* Categories */}
+        <Route
+          path="/categories"
+          element={
+            <CategoryList
+              categories={categories}
+              expenses={expenses}
+              incomes={incomes}
+              currentUser={currentUser}
+            />
+          }
+        />
 
-        <Route path="/income" element={<IncomeList incomes={incomes} projects={projects} categories={categories} currentUser={currentUser} />} />
-        <Route path="/income/add" element={<IncomeAdd incomes={incomes} setIncomes={setIncomes} projects={projects} categories={categories} subCategories={subCategories} peoples={peoples} currentUser={currentUser} />} />
-        
-        <Route path="/categories" element={<CategoryList categories={categories} expenses={expenses} incomes={incomes} currentUser={currentUser} />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

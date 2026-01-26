@@ -1,6 +1,5 @@
 const BASE_URL = 'http://localhost:3000/api';
 
-// Helper to handle responses
 const handleResponse = async (response) => {
     if (!response.ok) {
         const errorText = await response.text();
@@ -9,18 +8,18 @@ const handleResponse = async (response) => {
     return response.json();
 };
 
-// GET
+// GET Request
 export const fetchData = async (endpoint) => {
     try {
         const response = await fetch(`${BASE_URL}${endpoint}`);
         return await handleResponse(response);
     } catch (error) {
         console.error(`Error fetching ${endpoint}:`, error);
-        return []; // Return empty array on fail to prevent crash
+        return []; // Return empty array to prevent crashes
     }
 };
 
-// POST (Create)
+// POST Request (Login, Register, Add Data)
 export const postData = async (endpoint, data) => {
     try {
         const response = await fetch(`${BASE_URL}${endpoint}`, {
