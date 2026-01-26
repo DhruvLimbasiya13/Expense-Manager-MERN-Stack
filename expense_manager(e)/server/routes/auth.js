@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const User = require('../models/User');
+const User = require('../models/User.model');
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {

@@ -24,7 +24,7 @@ mongoose.connect(process.env.MONGO_URL)
 
 // Import Routes
 const authRoute = require('./routes/auth');
-const peopleRoute = require('./routes/peoples'); // Don't forget this new route!
+const peopleRoute = require('./routes/peoples');
 const expenseRoute = require('./routes/expenses');
 const incomeRoute = require('./routes/incomes');
 const projectRoute = require('./routes/projects');
