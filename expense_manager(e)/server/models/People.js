@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
-const PeopleSchema = new mongoose.Schema({
-    peopleCode: { type: String },
-    password: { type: String, required: true },
-    peopleName: { type: String, required: true },
-    email: { type: String, required: true },
-    mobileNo: { type: String, required: true },
+const ProjectSchema = new mongoose.Schema({
+    projectName: { type: String, required: true },
+    projectLogo: { type: String },
+    projectStartDate: { type: Date },
+    projectEndDate: { type: Date },
+    projectDetail: { type: String },
     description: { type: String },
     
     // Foreign Key: UserID
@@ -16,4 +16,4 @@ const PeopleSchema = new mongoose.Schema({
     modified: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('People', PeopleSchema);
+module.exports = mongoose.model('Project', ProjectSchema);
