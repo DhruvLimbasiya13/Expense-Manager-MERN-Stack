@@ -1,14 +1,12 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-    // UserID is auto-generated in SQL, MongoDB uses _id by default
     userName: { type: String, required: true },
     emailAddress: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    mobileNo: { type: String, required: true },
-    profileImage: { type: String },
-    created: { type: Date, default: Date.now },
-    modified: { type: Date, default: Date.now }
+    role: { type: String, default: "normal_user" },
+    mobileNo: { type: String, default: "" },
+    created: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('User', UserSchema);
