@@ -1,47 +1,42 @@
 const router = require('express').Router();
-const SubCategory = require('../models/SubCategory');
-
+const People = require('../models/People');
+// GET All Peoples
 router.get('/', async (req, res) => {
     try {
-        const subCategories = await SubCategory.find().populate('categoryID', 'categoryName');
-        res.status(200).json(subCategories);
+        const peoples = await People.find().populate('userID', 'userName emailAddress');
+        res.status(200).json(peoples);
     } catch (err) { res.status(500).json(err); }
 });
 
-// GET by Category ID (Useful for dropdowns)
-router.get('/category/:id', async (req, res) => {
-    try {
-        const subCategories = await SubCategory.find({ categoryID: req.params.id });
-        res.status(200).json(subCategories);
-    } catch (err) { res.status(500).json(err); }
-});
-
+// POST (Create new Person/Employee)
 router.post('/', async (req, res) => {
     try {
-        const newSubCategory = new SubCategory({
+        const newPeople = new People({
             ...req.body,
             created: new Date(),
             modified: new Date()
         });
-        const saved = await newSubCategory.save();
+        const saved = await newPeople.save();
         res.status(200).json(saved);
     } catch (err) { res.status(500).json(err); }
 });
 
+// UPDATE
 router.put('/:id', async (req, res) => {
     try {
-        const updatedSubCategory = await SubCategory.findByIdAndUpdate(
+        const updatedPeople = await People.findByIdAndUpdate(
             req.params.id,
             { ...req.body, modified: new Date() },
             { new: true }
         );
-        res.status(200).json(updatedSubCategory);
+        res.status(200).json(updatedPeople);
     } catch (err) { res.status(500).json(err); }
 });
 
+// DELETE
 router.delete('/:id', async (req, res) => {
     try {
-        await SubCategory.findByIdAndDelete(req.params.id);
+        await People.findByIdAndDelete(req.params.id);
         res.status(200).json("Deleted");
     } catch (err) { res.status(500).json(err); }
 });
