@@ -47,9 +47,9 @@ function ExpenseAdd({
   };
 
   return (
-    <div className="container mt-5">
-      <div className="card custom-card p-4">
-        <h3>Record Expense</h3>
+    <div className="container mt-5 fade-in-up">
+      <div className="card glass-card hover-lift p-4 p-md-5" style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <h3 className="mb-4 fw-bold" style={{ color: 'var(--text-primary)' }}>Record Expense</h3>
         <form onSubmit={handleSubmit}>
           <div className="row">
             <div className="col-md-6 mb-3">
@@ -168,8 +168,8 @@ function ExpenseAdd({
             ></textarea>
           </div>
 
-          <button type="submit" className="btn btn-primary w-100">
-            Save
+          <button type="submit" className="btn btn-coral w-100">
+            Save Expense
           </button>
         </form>
       </div>

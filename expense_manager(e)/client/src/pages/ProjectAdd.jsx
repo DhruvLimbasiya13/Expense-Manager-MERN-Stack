@@ -29,15 +29,16 @@ function ProjectAdd({ projects, setProjects, currentUser }) {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="card custom-card p-4">
-        <h3>New Project</h3>
+    <div className="container mt-5 fade-in-up">
+      <div className="card glass-card hover-lift p-4 p-md-5" style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <h3 className="mb-4 fw-bold" style={{ color: 'var(--text-primary)' }}>Create New Project</h3>
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label>Project Name</label>
+          <div className="mb-4">
+            <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Project Name</label>
             <input
               type="text"
-              className="form-control"
+              className="form-control glass-input"
+              placeholder="e.g. Website Redesign"
               required
               value={formData.projectName}
               onChange={(e) =>
@@ -46,22 +47,22 @@ function ProjectAdd({ projects, setProjects, currentUser }) {
             />
           </div>
           <div className="row">
-            <div className="col-md-6 mb-3">
-              <label>Start Date</label>
+            <div className="col-md-6 mb-4">
+              <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Start Date</label>
               <input
                 type="date"
-                className="form-control"
+                className="form-control glass-input"
                 value={formData.projectStartDate}
                 onChange={(e) =>
                   setFormData({ ...formData, projectStartDate: e.target.value })
                 }
               />
             </div>
-            <div className="col-md-6 mb-3">
-              <label>End Date</label>
+            <div className="col-md-6 mb-4">
+              <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>End Date</label>
               <input
                 type="date"
-                className="form-control"
+                className="form-control glass-input"
                 value={formData.projectEndDate}
                 onChange={(e) =>
                   setFormData({ ...formData, projectEndDate: e.target.value })
@@ -69,9 +70,15 @@ function ProjectAdd({ projects, setProjects, currentUser }) {
               />
             </div>
           </div>
-          <button type="submit" className="btn btn-primary">
-            Save Project
-          </button>
+          
+          <div className="d-flex justify-content-end mt-2">
+             <button type="button" className="btn btn-outline-light me-2 border-0" onClick={() => navigate('/projects')}>
+                Cancel
+             </button>
+             <button type="submit" className="btn btn-premium shadow-lg px-4">
+                Create Project
+             </button>
+          </div>
         </form>
       </div>
     </div>

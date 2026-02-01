@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 // 2. Enable CORS (Allows connection from React Frontend)
 app.use(cors({
-    origin: "http://localhost:5173", // Your React App URL
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173"], // Allow both localhost and 127.0.0.1
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
@@ -19,9 +19,15 @@ app.use(cors({
 app.use(express.json()); // Parses incoming JSON requests
 
 // 3. Database Connection
-mongoose.connect(process.env.MONGO_URL)
+// 3. Database Connection
+mongoose.connect(process.env.MONGO_URL, {
+    serverSelectionTimeoutMS: 5000,
+})
     .then(() => console.log('✅ MongoDB Connected'))
-    .catch(err => console.error('❌ MongoDB Connection Error:', err));
+    .catch(err => {
+        console.error('❌ MongoDB Connection Error:', err.message);
+        console.error('Check your MongoDB Atlas IP Whitelist. Allow 0.0.0.0/0');
+    });
 
 const authRoute = require('./routes/auth');
 const peopleRoute = require('./routes/peoples');

@@ -70,18 +70,18 @@ function ExpenseEdit({
   if (!existingExpense) return null; // Prevent flicker before redirect
 
   return (
-    <div className="container mt-5 fade-in">
+    <div className="container mt-5 fade-in-up">
       <div className="row justify-content-center">
         <div className="col-md-8">
-          <div className="card custom-card p-4">
-            <h3 className="mb-4">Edit Expense</h3>
+          <div className="card glass-card hover-lift p-4 p-md-5">
+            <h3 className="mb-4 fw-bold" style={{ color: 'var(--text-primary)' }}>Edit Expense</h3>
             <form onSubmit={handleSubmit}>
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="form-label fw-bold">Date</label>
+                  <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Date</label>
                   <input
                     type="date"
-                    className="form-control"
+                    className="form-control glass-input"
                     required
                     value={formData.date}
                     onChange={(e) =>
@@ -90,12 +90,12 @@ function ExpenseEdit({
                   />
                 </div>
                 <div className="col-md-6 mb-3">
-                  <label className="form-label fw-bold">Amount</label>
+                  <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Amount</label>
                   <div className="input-group">
-                    <span className="input-group-text">₹</span>
+                    <span className="input-group-text" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}>₹</span>
                     <input
                       type="number"
-                      className="form-control"
+                      className="form-control glass-input"
                       required
                       value={formData.amount}
                       onChange={(e) =>
@@ -107,18 +107,18 @@ function ExpenseEdit({
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-bold">Project</label>
+                <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Project</label>
                 <select
-                  className="form-select"
+                  className="form-select glass-input"
                   required
                   value={formData.projectId}
                   onChange={(e) =>
                     setFormData({ ...formData, projectId: e.target.value })
                   }
                 >
-                  <option value="">Select Project</option>
+                  <option value="" style={{ color: '#000' }}>Select Project</option>
                   {projects.map((p) => (
-                    <option key={p.id} value={p.id}>
+                    <option key={p.id} value={p.id} style={{ color: '#000' }}>
                       {p.name}
                     </option>
                   ))}
@@ -127,9 +127,9 @@ function ExpenseEdit({
 
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="form-label fw-bold">Category</label>
+                  <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Category</label>
                   <select
-                    className="form-select"
+                    className="form-select glass-input"
                     required
                     value={formData.categoryId}
                     onChange={(e) =>
@@ -140,18 +140,18 @@ function ExpenseEdit({
                       })
                     }
                   >
-                    <option value="">Select Category</option>
+                    <option value="" style={{ color: '#000' }}>Select Category</option>
                     {expenseCategories.map((c) => (
-                      <option key={c.id} value={c.id}>
+                      <option key={c.id} value={c.id} style={{ color: '#000' }}>
                         {c.name}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div className="col-md-6 mb-3">
-                  <label className="form-label fw-bold">Sub-Category</label>
+                  <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Sub-Category</label>
                   <select
-                    className="form-select"
+                    className="form-select glass-input"
                     value={formData.subCategoryId}
                     onChange={(e) =>
                       setFormData({
@@ -161,9 +161,9 @@ function ExpenseEdit({
                     }
                     disabled={!formData.categoryId}
                   >
-                    <option value="">Select Sub-Category</option>
+                    <option value="" style={{ color: '#000' }}>Select Sub-Category</option>
                     {filteredSubCategories.map((sub) => (
-                      <option key={sub.id} value={sub.id}>
+                      <option key={sub.id} value={sub.id} style={{ color: '#000' }}>
                         {sub.name}
                       </option>
                     ))}
@@ -172,9 +172,9 @@ function ExpenseEdit({
               </div>
 
               <div className="mb-4">
-                <label className="form-label fw-bold">Remarks</label>
+                <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Remarks</label>
                 <textarea
-                  className="form-control"
+                  className="form-control glass-input"
                   rows="2"
                   value={formData.remarks}
                   onChange={(e) =>
@@ -183,15 +183,15 @@ function ExpenseEdit({
                 ></textarea>
               </div>
 
-              <div className="d-flex gap-2">
+              <div className="d-flex justify-content-end gap-3 mt-4">
                 <button
                   type="button"
-                  className="btn btn-light w-50 border"
+                  className="btn btn-outline-light border-0"
                   onClick={() => navigate("/expenses")}
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary w-50">
+                <button type="submit" className="btn btn-coral shadow-lg px-4">
                   Update Expense
                 </button>
               </div>

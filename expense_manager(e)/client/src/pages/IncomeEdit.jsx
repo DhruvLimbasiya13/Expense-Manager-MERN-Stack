@@ -62,59 +62,59 @@ function IncomeEdit({ incomes, setIncomes, projects, categories, subCategories }
   if (!existingIncome) return null;
 
   return (
-    <div className="container mt-5 fade-in">
+    <div className="container mt-5 fade-in-up">
       <div className="row justify-content-center">
         <div className="col-md-8">
-          <div className="card custom-card p-4">
-            <h3 className="mb-4">Edit Income</h3>
+          <div className="card glass-card hover-lift p-4 p-md-5">
+            <h3 className="mb-4 fw-bold" style={{ color: 'var(--text-primary)' }}>Edit Income</h3>
             <form onSubmit={handleSubmit}>
               <div className="row">
                 <div className="col-md-6 mb-3">
-                    <label className="form-label fw-bold">Date</label>
-                    <input type="date" className="form-control" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
+                    <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Date</label>
+                    <input type="date" className="form-control glass-input" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
                 </div>
                 <div className="col-md-6 mb-3">
-                    <label className="form-label fw-bold">Amount</label>
+                    <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Amount</label>
                     <div className="input-group">
-                        <span className="input-group-text">₹</span>
-                        <input type="number" className="form-control" required value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} />
+                        <span className="input-group-text" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}>₹</span>
+                        <input type="number" className="form-control glass-input" required value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} />
                     </div>
                 </div>
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-bold">Project</label>
-                <select className="form-select" required value={formData.projectId} onChange={e => setFormData({...formData, projectId: e.target.value})}>
-                  <option value="">Select Project</option>
-                  {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Project</label>
+                <select className="form-select glass-input" required value={formData.projectId} onChange={e => setFormData({...formData, projectId: e.target.value})}>
+                  <option value="" style={{ color: '#000' }}>Select Project</option>
+                  {projects.map(p => <option key={p.id} value={p.id} style={{ color: '#000' }}>{p.name}</option>)}
                 </select>
               </div>
 
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="form-label fw-bold">Category</label>
-                  <select className="form-select" required value={formData.categoryId} onChange={e => setFormData({...formData, categoryId: e.target.value, subCategoryId: ""})}>
-                    <option value="">Select Category</option>
-                    {incomeCategories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Category</label>
+                  <select className="form-select glass-input" required value={formData.categoryId} onChange={e => setFormData({...formData, categoryId: e.target.value, subCategoryId: ""})}>
+                    <option value="" style={{ color: '#000' }}>Select Category</option>
+                    {incomeCategories.map(c => <option key={c.id} value={c.id} style={{ color: '#000' }}>{c.name}</option>)}
                   </select>
                 </div>
                 <div className="col-md-6 mb-3">
-                  <label className="form-label fw-bold">Sub-Category</label>
-                  <select className="form-select" value={formData.subCategoryId} onChange={e => setFormData({...formData, subCategoryId: e.target.value})} disabled={!formData.categoryId}>
-                    <option value="">Select Sub-Category</option>
-                    {filteredSubCategories.map(sub => <option key={sub.id} value={sub.id}>{sub.name}</option>)}
+                  <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Sub-Category</label>
+                  <select className="form-select glass-input" value={formData.subCategoryId} onChange={e => setFormData({...formData, subCategoryId: e.target.value})} disabled={!formData.categoryId}>
+                    <option value="" style={{ color: '#000' }}>Select Sub-Category</option>
+                    {filteredSubCategories.map(sub => <option key={sub.id} value={sub.id} style={{ color: '#000' }}>{sub.name}</option>)}
                   </select>
                 </div>
               </div>
 
               <div className="mb-4">
-                <label className="form-label fw-bold">Remarks</label>
-                <textarea className="form-control" rows="2" value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})}></textarea>
+                <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Remarks</label>
+                <textarea className="form-control glass-input" rows="2" value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})}></textarea>
               </div>
 
-              <div className="d-flex gap-2">
-                  <button type="button" className="btn btn-light w-50 border" onClick={() => navigate("/income")}>Cancel</button>
-                  <button type="submit" className="btn btn-primary w-50">Update Income</button>
+              <div className="d-flex justify-content-end gap-3 mt-4">
+                  <button type="button" className="btn btn-outline-light border-0" onClick={() => navigate("/income")}>Cancel</button>
+                  <button type="submit" className="btn btn-emerald shadow-lg px-4">Update Income</button>
               </div>
             </form>
           </div>

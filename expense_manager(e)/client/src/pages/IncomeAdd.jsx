@@ -46,11 +46,10 @@ function IncomeAdd({
   };
 
   return (
-    <div className="container mt-5 fade-in">
+    <div className="container mt-5 fade-in-up">
       <div className="row justify-content-center">
-        <div className="col-md-8">
-          <div className="card custom-card p-4">
-            <h3 className="mb-4">Record Income</h3>
+        <div className="card glass-card hover-lift p-4 p-md-5" style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <h3 className="mb-4 fw-bold" style={{ color: 'var(--text-primary)' }}>Record Income</h3>
             <form onSubmit={handleSubmit}>
               <div className="row">
                 <div className="col-md-6 mb-3">
@@ -68,7 +67,11 @@ function IncomeAdd({
                 <div className="col-md-6 mb-3">
                   <label className="form-label fw-bold">Amount</label>
                   <div className="input-group">
-                    <span className="input-group-text">₹</span>
+                    <span className="input-group-text" style={{
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      border: '1px solid var(--glass-border)',
+                      color: 'var(--text-primary)'
+                    }}>₹</span>
                     <input
                       type="number"
                       className="form-control"
@@ -183,14 +186,13 @@ function IncomeAdd({
                 ></textarea>
               </div>
 
-              <button type="submit" className="btn btn-primary w-100 shadow-sm">
+              <button type="submit" className="btn btn-emerald w-100 shadow-sm">
                 Save Income
               </button>
             </form>
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

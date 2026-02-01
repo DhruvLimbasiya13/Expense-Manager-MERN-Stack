@@ -20,6 +20,9 @@ import ProjectAdd from "./pages/ProjectAdd";
 import ProjectDetails from "./pages/ProjectDetails";
 
 import CategoryList from "./pages/CategoryList";
+import UserList from "./pages/UserList";
+import UserAdd from "./pages/UserAdd";
+import UserEdit from "./pages/UserEdit";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -214,6 +217,11 @@ function App() {
             />
           }
         />
+
+        {/* Admin User Management */}
+        <Route path="/users" element={<UserList users={users} setUsers={setUsers} />} />
+        <Route path="/users/add" element={<UserAdd setUsers={setUsers} />} />
+        <Route path="/users/edit/:id" element={<UserEdit users={users} setUsers={setUsers} />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

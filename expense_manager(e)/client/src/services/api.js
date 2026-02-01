@@ -32,4 +32,31 @@ export const postData = async (endpoint, data) => {
         console.error(`Error posting to ${endpoint}:`, error);
         throw error;
     }
+}
+// PUT Request (Update Data)
+export const putData = async (endpoint, data) => {
+    try {
+        const response = await fetch(`${BASE_URL}${endpoint}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        return await handleResponse(response);
+    } catch (error) {
+        console.error(`Error updating ${endpoint}:`, error);
+        throw error;
+    }
 };
+
+// DELETE Request
+export const deleteData = async (endpoint) => {
+    try {
+        const response = await fetch(`${BASE_URL}${endpoint}`, {
+            method: 'DELETE',
+        });
+        return await handleResponse(response);
+    } catch (error) {
+        console.error(`Error deleting ${endpoint}:`, error);
+        throw error;
+    }
+}

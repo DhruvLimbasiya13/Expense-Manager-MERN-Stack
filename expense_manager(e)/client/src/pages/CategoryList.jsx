@@ -47,11 +47,11 @@ function CategoryList({ categories, expenses, incomes, currentUser }) {
   const categoriesToShow = isAdmin ? categories : linkedCategories;
 
   return (
-    <div className="container mt-5 fade-in">
+    <div className="container mt-5 fade-in-up">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2>Categories</h2>
-          <p className="text-muted">
+          <h2 style={{ color: 'var(--text-primary)' }}>Categories</h2>
+          <p className="text-secondary">
             {isAdmin
               ? "Master list of all categories and company-wide totals."
               : "Overview of categories with active transactions."}
@@ -67,17 +67,18 @@ function CategoryList({ categories, expenses, incomes, currentUser }) {
 
           return (
             <div className="col-md-6 col-lg-4" key={cat.id}>
-              <div className="card custom-card h-100 border-0 shadow-sm">
+              <div className="card glass-card hover-lift h-100 border-0 shadow-sm">
                 <div className="card-body p-4">
                   {/* Header: Name and Type Badge */}
                   <div className="d-flex justify-content-between align-items-start mb-3">
-                    <h5 className="fw-bold text-dark mb-0">{cat.name}</h5>
+                    <h5 className="fw-bold mb-0" style={{ color: 'var(--text-primary)' }}>{cat.name}</h5>
                     <span
-                      className={`badge ${
-                        isExp ? "bg-danger" : "bg-success"
-                      } bg-opacity-10 ${
-                        isExp ? "text-danger" : "text-success"
-                      } px-3 py-2 rounded-pill`}
+                      className="badge px-3 py-2 rounded-pill"
+                      style={{
+                        background: isExp ? 'rgba(255, 107, 107, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                        color: isExp ? 'var(--coral)' : 'var(--emerald)',
+                        border: `1px solid ${isExp ? 'rgba(255, 107, 107, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`
+                      }}
                     >
                       {isExp ? "Expense" : "Income"}
                     </span>
@@ -86,32 +87,39 @@ function CategoryList({ categories, expenses, incomes, currentUser }) {
                   {/* Total Amount Display */}
                   <div className="mb-3">
                     <small
-                      className="text-muted text-uppercase fw-bold"
+                      className="text-secondary text-uppercase fw-bold"
                       style={{ fontSize: "0.75rem" }}
                     >
                       Total {isExp ? "Spent" : "Earned"}
                     </small>
                     <h3
-                      className={`fw-bold mb-0 ${
-                        isExp ? "text-dark" : "text-success"
-                      }`}
+                      className="fw-bold mb-0"
+                      style={{ color: isExp ? 'var(--coral)' : 'var(--emerald)' }}
                     >
                       ₹ {total.toLocaleString()}
                     </h3>
                   </div>
 
                   {/* Footer: Transaction Count & Status */}
-                  <div className="d-flex justify-content-between align-items-center pt-3 border-top">
-                    <div className="text-muted small">
+                  <div className="d-flex justify-content-between align-items-center pt-3" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <div className="text-secondary small">
                       {count} {count === 1 ? "Transaction" : "Transactions"}
                     </div>
                     {/* Badge logic: If count > 0 it's Active, else it's Unused (for Admin view) */}
                     {count > 0 ? (
-                      <span className="badge bg-light text-secondary border">
+                      <span className="badge" style={{
+                        background: 'rgba(16, 185, 129, 0.1)',
+                        color: 'var(--emerald)',
+                        border: '1px solid rgba(16, 185, 129, 0.3)'
+                      }}>
                         Active
                       </span>
                     ) : (
-                      <span className="badge bg-light text-muted border">
+                      <span className="badge" style={{
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        color: 'var(--text-muted)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
                         Unused
                       </span>
                     )}
@@ -123,7 +131,7 @@ function CategoryList({ categories, expenses, incomes, currentUser }) {
         })}
 
         {categoriesToShow.length === 0 && (
-          <div className="col-12 text-center text-muted py-5">
+          <div className="col-12 text-center text-secondary py-5">
             <p>No categories found.</p>
           </div>
         )}

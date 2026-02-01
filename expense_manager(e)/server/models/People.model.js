@@ -7,10 +7,10 @@ const ProjectSchema = new mongoose.Schema({
     projectEndDate: { type: Date },
     projectDetail: { type: String },
     description: { type: String },
-    
+
     // Foreign Key: UserID
     userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    
+
     isActive: { type: Boolean, default: true },
     created: { type: Date, default: Date.now },
     modified: { type: Date, default: Date.now }
