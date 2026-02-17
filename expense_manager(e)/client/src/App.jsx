@@ -47,7 +47,6 @@ function App() {
       const loadData = async () => {
         try {
           // Fetch everything in parallel
-          // added fetchData("/auth") to get the list of users
           const [exp, inc, proj, cat, sub, ppl, allUsers] = await Promise.all([
             fetchData("/expenses"),
             fetchData("/incomes"),
