@@ -1,5 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function CategoryList({ categories, expenses, incomes, currentUser }) {
   const isAdmin = currentUser.role === "admin";
+  const navigate = useNavigate();
 
   // 1. Filter Transactions based on Role (Admin sees all, User sees theirs)
   const myExpenses = isAdmin
@@ -19,7 +22,7 @@ function CategoryList({ categories, expenses, incomes, currentUser }) {
     } else if (category.isIncome) {
       return myIncomes
         .filter((i) => Number(i.categoryId) === Number(category.id))
-        .reduce((sum, i) => sum + Number(i.amount), 0); 
+        .reduce((sum, i) => sum + Number(i.amount), 0);
     }
     return 0;
   };
@@ -57,6 +60,24 @@ function CategoryList({ categories, expenses, incomes, currentUser }) {
               : "Overview of categories with active transactions."}
           </p>
         </div>
+        {isAdmin && (
+          <div className="d-flex gap-2">
+            <button
+              type="button"
+              className="btn btn-emerald"
+              onClick={() => navigate("/categories/add")}
+            >
+              + Add Category
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-emerald"
+              onClick={() => navigate("/subcategories/add")}
+            >
+              + Add Sub-Category
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="row g-4">

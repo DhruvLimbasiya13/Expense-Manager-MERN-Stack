@@ -1,19 +1,19 @@
 const mongoose = require('mongoose');
 
-const ProjectSchema = new mongoose.Schema({
-    projectName: { type: String, required: true },
-    projectLogo: { type: String },
-    projectStartDate: { type: Date },
-    projectEndDate: { type: Date },
-    projectDetail: { type: String },
+const PeopleSchema = new mongoose.Schema({
+    peopleCode: { type: String },
+    password: { type: String, required: true },
+    peopleName: { type: String, required: true },
+    email: { type: String, required: true },
+    mobileNo: { type: String, required: true },
     description: { type: String },
 
-    // Foreign Key: UserID
-    userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    // Foreign Key: UserID (optional for self-registration)
+    userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
     isActive: { type: Boolean, default: true },
     created: { type: Date, default: Date.now },
     modified: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Project', ProjectSchema);
+module.exports = mongoose.model('People', PeopleSchema);

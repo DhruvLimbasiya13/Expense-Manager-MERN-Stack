@@ -20,6 +20,8 @@ import ProjectAdd from "./pages/ProjectAdd";
 import ProjectDetails from "./pages/ProjectDetails";
 
 import CategoryList from "./pages/CategoryList";
+import CategoryAdd from "./pages/CategoryAdd";
+import SubCategoryAdd from "./pages/SubCategoryAdd";
 import UserList from "./pages/UserList";
 import UserAdd from "./pages/UserAdd";
 import UserEdit from "./pages/UserEdit";
@@ -45,7 +47,7 @@ function App() {
       const loadData = async () => {
         try {
           // Fetch everything in parallel
-          // We added fetchData("/auth") to get the list of users
+          // added fetchData("/auth") to get the list of users
           const [exp, inc, proj, cat, sub, ppl, allUsers] = await Promise.all([
             fetchData("/expenses"),
             fetchData("/incomes"),
@@ -53,7 +55,7 @@ function App() {
             fetchData("/categories"),
             fetchData("/subcategories"),
             fetchData("/peoples"),
-            fetchData("/auth"), // <--- NEW: Fetch Users from backend
+            fetchData("/auth"),
           ]);
 
           setExpenses(exp);
@@ -62,7 +64,7 @@ function App() {
           setCategories(cat);
           setSubCategories(sub);
           setPeoples(ppl);
-          setUsers(allUsers); // <--- FIX: This solves the "unused" error
+          setUsers(allUsers);
         } catch (error) {
           console.error("Failed to load data:", error);
         }
@@ -128,7 +130,9 @@ function App() {
               expenses={expenses}
               setExpenses={setExpenses}
               categories={categories}
+              setCategories={setCategories}
               subCategories={subCategories}
+              setSubCategories={setSubCategories}
               projects={projects}
               peoples={peoples}
               currentUser={currentUser}
@@ -167,7 +171,9 @@ function App() {
               incomes={incomes}
               setIncomes={setIncomes}
               categories={categories}
+              setCategories={setCategories}
               subCategories={subCategories}
+              setSubCategories={setSubCategories}
               projects={projects}
               peoples={peoples}
               currentUser={currentUser}
@@ -213,6 +219,27 @@ function App() {
               categories={categories}
               expenses={expenses}
               incomes={incomes}
+              currentUser={currentUser}
+            />
+          }
+        />
+        <Route
+          path="/categories/add"
+          element={
+            <CategoryAdd
+              categories={categories}
+              setCategories={setCategories}
+              currentUser={currentUser}
+            />
+          }
+        />
+        <Route
+          path="/subcategories/add"
+          element={
+            <SubCategoryAdd
+              categories={categories}
+              subCategories={subCategories}
+              setSubCategories={setSubCategories}
               currentUser={currentUser}
             />
           }

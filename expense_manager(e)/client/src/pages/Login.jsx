@@ -8,6 +8,7 @@ function Login({ onLogin }) {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [role, setRole] = useState("normal_user");
+  const [userType, setUserType] = useState("admin");
   const [mobileNo, setMobileNo] = useState("");
   const [error, setError] = useState("");
 
@@ -22,25 +23,39 @@ function Login({ onLogin }) {
       if (isRegistering) {
         // --- REGISTER API CALL ---
         console.log("Attempting Registration...");
-        // CRITICAL FIX: Mapping frontend state to Backend Schema keys
-        const newUser = {
-          userName: name,       // Backend expects 'userName'
-          emailAddress: email,  // Backend expects 'emailAddress'
-          password: password,
-          role: role,
-          mobileNo: mobileNo || ""
-        };
-        console.log("Register Payload:", newUser);
+        console.log("Selected Role:", role);
 
-        await postData('/auth/register', newUser);
-        console.log("Registration API Success");
+        if (role === "normal_user") {
+          // Register as Employee - save to peoples collection
+          const newEmployee = {
+            peopleName: name,
+            email: email,
+            password: password,
+            mobileNo: mobileNo || ""
+          };
+          console.log("Register Employee Payload:", newEmployee);
+          await postData('/peoples', newEmployee);
+          console.log("Employee Registration API Success");
+        } else {
+          // Register as Admin - save to users collection
+          const newUser = {
+            userName: name,
+            emailAddress: email,
+            password: password,
+            role: role,
+            mobileNo: mobileNo || ""
+          };
+          console.log("Register Admin Payload:", newUser);
+          await postData('/auth/register', newUser);
+          console.log("Admin Registration API Success");
+        }
 
         alert("Registration Successful! Please Login.");
         setIsRegistering(false);
       } else {
         // --- LOGIN API CALL ---
         console.log("Attempting Login...");
-        const credentials = { email: email, password: password };
+        const credentials = { email: email, password: password, userType: userType };
         console.log("Login Payload:", credentials);
 
         const user = await postData('/auth/login', credentials);
@@ -152,31 +167,33 @@ function Login({ onLogin }) {
             </>
           )}
 
-          <div className="mb-3">
-            <label className="form-label small fw-bold d-block">Login As</label>
-            <div className="d-flex gap-4">
-              <div className="form-check">
-                <input
-                  className="form-check-input" type="radio" name="role" id="roleNormal"
-                  value="normal_user" checked={role === "normal_user"}
-                  onChange={(e) => setRole(e.target.value)}
-                />
-                <label className="form-check-label text-secondary" htmlFor="roleNormal">
-                  Employee
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  className="form-check-input" type="radio" name="role" id="roleAdmin"
-                  value="admin" checked={role === "admin"}
-                  onChange={(e) => setRole(e.target.value)}
-                />
-                <label className="form-check-label text-secondary" htmlFor="roleAdmin">
-                  Admin
-                </label>
+          {!isRegistering && (
+            <div className="mb-3">
+              <label className="form-label small fw-bold d-block">Login As</label>
+              <div className="d-flex gap-4">
+                <div className="form-check">
+                  <input
+                    className="form-check-input" type="radio" name="userType" id="userTypeEmployee"
+                    value="employee" checked={userType === "employee"}
+                    onChange={(e) => setUserType(e.target.value)}
+                  />
+                  <label className="form-check-label text-secondary" htmlFor="userTypeEmployee">
+                    Employee
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input" type="radio" name="userType" id="userTypeAdmin"
+                    value="admin" checked={userType === "admin"}
+                    onChange={(e) => setUserType(e.target.value)}
+                  />
+                  <label className="form-check-label text-secondary" htmlFor="userTypeAdmin">
+                    Admin
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
+          )}
           <div className="mb-3">
             <label className="form-label small fw-bold">Email Address</label>
             <input

@@ -121,7 +121,8 @@ a:hover {
 
 .glass-input::placeholder {
   color: var(--text-muted);
-  opacity: 0.7;
+  opacity: 1;
+  /* Reset opacity */
 }
 
 /* ========================================
@@ -227,6 +228,67 @@ a:hover {
   background: #ef4444;
 }
 
+/* Outline Button Variants */
+.btn-outline-emerald {
+  background: transparent;
+  border: 1.5px solid var(--emerald);
+  color: var(--emerald);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-emerald:hover {
+  background: var(--emerald);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--glow-emerald);
+}
+
+.btn-outline-coral {
+  background: transparent;
+  border: 1.5px solid var(--coral);
+  color: var(--coral);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-coral:hover {
+  background: var(--coral);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--glow-coral);
+}
+
+.btn-outline-gold {
+  background: transparent;
+  border: 1.5px solid var(--gold);
+  color: var(--gold);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+  background: var(--gold);
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: var(--glow-gold);
+}
+
+.btn-outline-secondary {
+  background: transparent;
+  border: 1.5px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
 /* ========================================
    BOOTSTRAP OVERRIDES
    ======================================== */
@@ -298,7 +360,35 @@ a:hover {
   color: var(--text-primary);
 }
 
+/* Global Placeholder Styling */
+::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 1 !important;
+}
+
+/* Reduced opacity for Expense Add form, Income Add form & Project Add form */
+.expense-add-form ::placeholder,
+.expense-add-form .form-select:required:invalid,
+.income-add-form ::placeholder,
+.income-add-form .form-select:required:invalid,
+.project-add-form ::placeholder,
+.project-add-form .form-select:required:invalid {
+  opacity: 0.6 !important;
+}
+
 .form-control::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+.form-select:required:invalid {
+  color: var(--text-muted);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  opacity: 0.6;
   color: var(--text-muted);
 }
 

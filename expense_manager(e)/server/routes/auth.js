@@ -20,17 +20,39 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// POST /api/auth/login (Keep your existing login logic)
+// POST /api/auth/login
 router.post('/login', async (req, res) => {
     try {
-        const user = await User.findOne({ emailAddress: req.body.email }); // Note: emailAddress to match schema
+        const { email, password, userType } = req.body;
 
-        if (!user || user.password !== req.body.password) {
-            return res.status(400).json("Invalid credentials");
+        let user;
+
+        if (userType === 'employee') {
+            // Check peoples collection for employee login
+            const People = require('../models/People.model');
+            user = await People.findOne({ email: email });
+
+            if (!user || user.password !== password) {
+                return res.status(400).json("Invalid credentials");
+            }
+
+            // Return employee data without password, add userType
+            const { password: pwd, ...others } = user._doc;
+            res.status(200).json({ ...others, userType: 'employee', role: 'employee' });
+
+        } else {
+            // Check users collection for admin/normal_user login
+            user = await User.findOne({ emailAddress: email });
+
+            if (!user || user.password !== password) {
+                return res.status(400).json("Invalid credentials");
+            }
+
+            // Return user data without password, add userType
+            const { password: pwd, ...others } = user._doc;
+            res.status(200).json({ ...others, userType: 'admin' });
         }
 
-        const { password, ...others } = user._doc;
-        res.status(200).json(others);
     } catch (err) {
         res.status(500).json(err);
     }

@@ -3,13 +3,12 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
-// 1. Load Environment Variables
+
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 2. Enable CORS (Allows connection from React Frontend)
 app.use(cors({
     origin: ["http://localhost:5173", "http://127.0.0.1:5173"], // Allow both localhost and 127.0.0.1
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -18,8 +17,7 @@ app.use(cors({
 
 app.use(express.json()); // Parses incoming JSON requests
 
-// 3. Database Connection
-// 3. Database Connection
+
 mongoose.connect(process.env.MONGO_URL, {
     serverSelectionTimeoutMS: 5000,
 })
@@ -37,10 +35,10 @@ const subCategoryRoute = require('./routes/subcategories');
 const expenseRoute = require('./routes/expenses');
 const incomeRoute = require('./routes/incomes');
 
-// 5. Use Routes
+
 // These define the API endpoints (e.g., http://localhost:3000/api/expenses)
 app.use('/api/auth', authRoute);
-app.use('/api/peoples', peopleRoute); // API endpoint for employees
+app.use('/api/peoples', peopleRoute);
 app.use('/api/projects', projectRoute);
 app.use('/api/categories', categoryRoute);
 app.use('/api/subcategories', subCategoryRoute);

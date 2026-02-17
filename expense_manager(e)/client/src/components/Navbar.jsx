@@ -3,8 +3,8 @@ import { Link, NavLink } from "react-router-dom";
 function Navbar({ currentUser, onLogout }) {
   const isAdmin = currentUser?.role === "admin";
 
-  // FIX: Check for both 'userName' AND 'name', fallback to "User"
-  const displayName = currentUser?.userName || currentUser?.name || "User";
+  // FIX: Check for 'userName' (admin), 'peopleName' (employee), or 'name', fallback to "User"
+  const displayName = currentUser?.userName || currentUser?.peopleName || currentUser?.name || "User";
 
   return (
     <nav className="navbar navbar-expand-lg shadow-sm mb-4" style={{
@@ -76,8 +76,8 @@ function Navbar({ currentUser, onLogout }) {
             {/* FIX: Use displayName for initial */}
             <div
               className="text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
-              style={{ 
-                width: "35px", 
+              style={{
+                width: "35px",
                 height: "35px",
                 background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))'
               }}

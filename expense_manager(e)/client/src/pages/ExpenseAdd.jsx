@@ -7,7 +7,9 @@ function ExpenseAdd({
   setExpenses,
   projects,
   categories,
+  setCategories,
   subCategories,
+  setSubCategories,
   peoples,
   currentUser,
 }) {
@@ -21,6 +23,24 @@ function ExpenseAdd({
     subCategoryID: "",
     peopleID: "",
     expenseDetail: "",
+  });
+
+  // Modal states
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showSubCategoryModal, setShowSubCategoryModal] = useState(false);
+
+  // New category/subcategory form data
+  const [newCategory, setNewCategory] = useState({
+    categoryName: "",
+    isExpense: true,
+    isIncome: false,
+    description: "",
+  });
+
+  const [newSubCategory, setNewSubCategory] = useState({
+    subCategoryName: "",
+    categoryID: "",
+    description: "",
   });
 
   const filteredSubCategories = subCategories.filter(
@@ -46,14 +66,56 @@ function ExpenseAdd({
     }
   };
 
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    const payload = {
+      ...newCategory,
+      userID: currentUser._id || currentUser.id,
+      isActive: true,
+      sequence: categories.length + 1,
+    };
+
+    try {
+      const saved = await postData("/categories", payload);
+      setCategories([...categories, saved]);
+      setFormData({ ...formData, categoryID: saved._id });
+      setShowCategoryModal(false);
+      setNewCategory({ categoryName: "", isExpense: true, isIncome: false, description: "" });
+    } catch (err) {
+      alert("Error saving category: " + err.message);
+    }
+  };
+
+  const handleAddSubCategory = async (e) => {
+    e.preventDefault();
+    const payload = {
+      ...newSubCategory,
+      userID: currentUser._id || currentUser.id,
+      isActive: true,
+      isExpense: true,
+      isIncome: false,
+      sequence: subCategories.length + 1,
+    };
+
+    try {
+      const saved = await postData("/subcategories", payload);
+      setSubCategories([...subCategories, saved]);
+      setFormData({ ...formData, subCategoryID: saved._id });
+      setShowSubCategoryModal(false);
+      setNewSubCategory({ subCategoryName: "", categoryID: "", description: "" });
+    } catch (err) {
+      alert("Error saving sub-category: " + err.message);
+    }
+  };
+
   return (
     <div className="container mt-5 fade-in-up">
       <div className="card glass-card hover-lift p-4 p-md-5" style={{ maxWidth: '800px', margin: '0 auto' }}>
         <h3 className="mb-4 fw-bold" style={{ color: 'var(--text-primary)' }}>Record Expense</h3>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="expense-add-form">
           <div className="row">
             <div className="col-md-6 mb-3">
-              <label>Date</label>
+              <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Date</label>
               <input
                 type="date"
                 className="form-control"
@@ -62,10 +124,11 @@ function ExpenseAdd({
                 onChange={(e) =>
                   setFormData({ ...formData, expenseDate: e.target.value })
                 }
+                style={{ color: formData.expenseDate ? 'var(--text-primary)' : 'var(--text-muted)' }}
               />
             </div>
             <div className="col-md-6 mb-3">
-              <label>Amount</label>
+              <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Amount</label>
               <input
                 type="number"
                 className="form-control"
@@ -80,7 +143,7 @@ function ExpenseAdd({
 
           <div className="row">
             <div className="col-md-6 mb-3">
-              <label>Employee (People)</label>
+              <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Employee (People)</label>
               <select
                 className="form-select"
                 required
@@ -88,28 +151,30 @@ function ExpenseAdd({
                 onChange={(e) =>
                   setFormData({ ...formData, peopleID: e.target.value })
                 }
+                style={{ color: formData.peopleID ? 'var(--text-primary)' : 'var(--text-muted)' }}
               >
-                <option value="">Select Person</option>
+                <option value="" style={{ color: 'var(--text-muted)' }}>Select Person</option>
                 {peoples &&
                   peoples.map((p) => (
-                    <option key={p._id} value={p._id}>
+                    <option key={p._id} value={p._id} style={{ color: 'var(--text-primary)' }}>
                       {p.peopleName}
                     </option>
                   ))}
               </select>
             </div>
             <div className="col-md-6 mb-3">
-              <label>Project</label>
+              <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Project</label>
               <select
                 className="form-select"
                 value={formData.projectID}
                 onChange={(e) =>
                   setFormData({ ...formData, projectID: e.target.value })
                 }
+                style={{ color: formData.projectID ? 'var(--text-primary)' : 'var(--text-muted)' }}
               >
-                <option value="">Select Project</option>
+                <option value="" style={{ color: 'var(--text-muted)' }}>Select Project</option>
                 {projects.map((p) => (
-                  <option key={p._id} value={p._id}>
+                  <option key={p._id} value={p._id} style={{ color: 'var(--text-primary)' }}>
                     {p.projectName}
                   </option>
                 ))}
@@ -119,37 +184,72 @@ function ExpenseAdd({
 
           <div className="row">
             <div className="col-md-6 mb-3">
-              <label>Category</label>
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <label className="form-label small fw-bold mb-0" style={{ color: 'var(--text-secondary)' }}>Category</label>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-emerald"
+                  onClick={() => setShowCategoryModal(true)}
+                  style={{
+                    fontSize: '0.75rem',
+                    padding: '0.25rem 0.5rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  + Add New
+                </button>
+              </div>
               <select
                 className="form-select"
                 required
                 value={formData.categoryID}
                 onChange={(e) =>
-                  setFormData({ ...formData, categoryID: e.target.value })
+                  setFormData({ ...formData, categoryID: e.target.value, subCategoryID: "" })
                 }
+                style={{ color: formData.categoryID ? 'var(--text-primary)' : 'var(--text-muted)' }}
               >
-                <option value="">Select Category</option>
+                <option value="" style={{ color: 'var(--text-muted)' }}>Select Category</option>
                 {categories
                   .filter((c) => c.isExpense)
                   .map((c) => (
-                    <option key={c._id} value={c._id}>
+                    <option key={c._id} value={c._id} style={{ color: 'var(--text-primary)' }}>
                       {c.categoryName}
                     </option>
                   ))}
               </select>
             </div>
             <div className="col-md-6 mb-3">
-              <label>Sub-Category</label>
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <label className="form-label small fw-bold mb-0" style={{ color: 'var(--text-secondary)' }}>Sub-Category</label>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-emerald"
+                  onClick={() => {
+                    setNewSubCategory({ ...newSubCategory, categoryID: formData.categoryID });
+                    setShowSubCategoryModal(true);
+                  }}
+                  disabled={!formData.categoryID}
+                  style={{
+                    fontSize: '0.75rem',
+                    padding: '0.25rem 0.5rem',
+                    opacity: !formData.categoryID ? 0.5 : 1,
+                    cursor: !formData.categoryID ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  + Add New
+                </button>
+              </div>
               <select
                 className="form-select"
                 value={formData.subCategoryID}
                 onChange={(e) =>
                   setFormData({ ...formData, subCategoryID: e.target.value })
                 }
+                style={{ color: formData.subCategoryID ? 'var(--text-primary)' : 'var(--text-muted)' }}
               >
-                <option value="">Select Sub-Category</option>
+                <option value="" style={{ color: 'var(--text-muted)' }}>Select Sub-Category</option>
                 {filteredSubCategories.map((s) => (
-                  <option key={s._id} value={s._id}>
+                  <option key={s._id} value={s._id} style={{ color: 'var(--text-primary)' }}>
                     {s.subCategoryName}
                   </option>
                 ))}
@@ -158,7 +258,7 @@ function ExpenseAdd({
           </div>
 
           <div className="mb-3">
-            <label>Remarks</label>
+            <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Remarks</label>
             <textarea
               className="form-control"
               value={formData.expenseDetail}
@@ -173,6 +273,120 @@ function ExpenseAdd({
           </button>
         </form>
       </div>
+
+      {/* Category Modal */}
+      {showCategoryModal && (
+        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content glass-card" style={{ border: '1px solid var(--glass-border)' }}>
+              <div className="modal-header" style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                <h5 className="modal-title fw-bold" style={{ color: 'var(--text-primary)' }}>Add New Category</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowCategoryModal(false)}
+                  style={{ filter: 'invert(1)' }}
+                ></button>
+              </div>
+              <form onSubmit={handleAddCategory}>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Category Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      required
+                      value={newCategory.categoryName}
+                      onChange={(e) => setNewCategory({ ...newCategory, categoryName: e.target.value })}
+                      placeholder="Enter category name"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Description (Optional)</label>
+                    <textarea
+                      className="form-control"
+                      rows="2"
+                      value={newCategory.description}
+                      onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
+                      placeholder="Enter description"
+                    ></textarea>
+                  </div>
+                </div>
+                <div className="modal-footer" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                  <button type="button" className="btn btn-outline-secondary" onClick={() => setShowCategoryModal(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-emerald">
+                    Save Category
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sub-Category Modal */}
+      {showSubCategoryModal && (
+        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content glass-card" style={{ border: '1px solid var(--glass-border)' }}>
+              <div className="modal-header" style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                <h5 className="modal-title fw-bold" style={{ color: 'var(--text-primary)' }}>Add New Sub-Category</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowSubCategoryModal(false)}
+                  style={{ filter: 'invert(1)' }}
+                ></button>
+              </div>
+              <form onSubmit={handleAddSubCategory}>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Parent Category</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={categories.find(c => c._id === formData.categoryID)?.categoryName || ''}
+                      disabled
+                      style={{ backgroundColor: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)' }}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Sub-Category Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      required
+                      value={newSubCategory.subCategoryName}
+                      onChange={(e) => setNewSubCategory({ ...newSubCategory, subCategoryName: e.target.value, categoryID: formData.categoryID })}
+                      placeholder="Enter sub-category name"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Description (Optional)</label>
+                    <textarea
+                      className="form-control"
+                      rows="2"
+                      value={newSubCategory.description}
+                      onChange={(e) => setNewSubCategory({ ...newSubCategory, description: e.target.value })}
+                      placeholder="Enter description"
+                    ></textarea>
+                  </div>
+                </div>
+                <div className="modal-footer" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                  <button type="button" className="btn btn-outline-secondary" onClick={() => setShowSubCategoryModal(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-emerald">
+                    Save Sub-Category
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
