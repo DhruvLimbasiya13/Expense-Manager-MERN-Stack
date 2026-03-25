@@ -201,6 +201,7 @@ function App() {
         <Route path="/projects" element={
           <ProjectList
             projects={projects}
+            setProjects={setProjects}
             expenses={expenses}
             incomes={incomes}
             currentUser={currentUser}

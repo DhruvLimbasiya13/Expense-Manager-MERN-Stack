@@ -57,23 +57,27 @@ function IncomeAdd({
     (sub) => resolveCategoryId(sub.categoryID) === String(formData.categoryID),
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const resolvedUserId =
       currentUser?.userID?._id || currentUser?.userID || currentUser?._id || currentUser?.id;
 
-    const newIncome = {
-      id: Date.now(),
-      userID: resolvedUserId,
+    const payload = {
       ...formData,
+      userID: resolvedUserId,
       peopleID: formData.peopleID || (isEmployeeLogin ? currentPeopleId : ""),
       amount: Number(formData.amount),
       projectID: formData.projectID || null,
       subCategoryID: formData.subCategoryID || null,
     };
 
-    setIncomes([...incomes, newIncome]);
-    navigate("/income");
+    try {
+      const saved = await postData("/incomes", payload);
+      setIncomes([...incomes, saved]);
+      navigate("/income");
+    } catch (err) {
+      alert("Error saving income: " + err.message);
+    }
   };
 
   const handleAddCategory = async (e) => {
@@ -196,13 +200,14 @@ function IncomeAdd({
                 <label className="form-label fw-bold">Project</label>
                 <select
                   className="form-select"
+                  required
                   value={formData.projectID}
                   onChange={(e) =>
                     setFormData({ ...formData, projectID: e.target.value })
                   }
                   style={{ color: formData.projectID ? 'var(--text-primary)' : 'var(--text-muted)' }}
                 >
-                  <option value="">Select Project (Optional)</option>
+                  <option value="">Select Project Name</option>
                   {projects.map((p) => (
                     <option key={p.id || p._id} value={p.id || p._id}>
                       {p.projectName}

@@ -187,13 +187,14 @@ function ExpenseAdd({
               <label className="form-label small fw-bold" style={{ color: 'var(--text-secondary)' }}>Project</label>
               <select
                 className="form-select"
+                required
                 value={formData.projectID}
                 onChange={(e) =>
                   setFormData({ ...formData, projectID: e.target.value })
                 }
                 style={{ color: formData.projectID ? 'var(--text-primary)' : 'var(--text-muted)' }}
               >
-                <option value="">Select Project</option>
+                <option value="">Select Project Name</option>
                 {projects.map((p) => (
                   <option key={p._id} value={p._id}>
                     {p.projectName}

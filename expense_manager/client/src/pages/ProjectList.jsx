@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
+import { deleteData } from "../services/api";
 
-function ProjectList({ projects, expenses, incomes, currentUser }) {
+function ProjectList({ projects, setProjects, expenses, incomes, currentUser }) {
   const navigate = useNavigate();
   const isAdmin = currentUser?.role === 'admin' || currentUser?.userType === 'admin';
 
@@ -34,6 +35,21 @@ function ProjectList({ projects, expenses, incomes, currentUser }) {
 
   // Show only involved projects
   const filteredProjects = projects.filter(p => involvedProjectIds.has(String(p._id)));
+
+  const handleDeleteProject = async (e, projectId) => {
+    e.stopPropagation();
+    if (!window.confirm("Are you sure you want to delete this project?")) return;
+
+    try {
+      await deleteData(`/projects/${projectId}`);
+      if (setProjects) {
+        setProjects(projects.filter((p) => String(p._id) !== String(projectId)));
+      }
+    } catch (err) {
+      console.error("Failed to delete project", err);
+      alert("Failed to delete project");
+    }
+  };
 
   return (
     <div className="container mt-5 fade-in-up">
@@ -92,9 +108,20 @@ function ProjectList({ projects, expenses, incomes, currentUser }) {
                     {project.description || project.projectDetail || "-"}
                   </td>
                   <td className="p-3 text-end pe-4">
-                    <button className="btn btn-sm btn-premium">
-                      View Details
-                    </button>
+                    <div className="d-flex justify-content-end align-items-center gap-2">
+                      <button className="btn btn-sm btn-premium">
+                        View Details
+                      </button>
+                      {isAdmin && (
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={(e) => handleDeleteProject(e, project._id)}
+                          title="Delete Project"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

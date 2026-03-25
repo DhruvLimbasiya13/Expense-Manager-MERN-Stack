@@ -15,8 +15,26 @@ function IncomeList({ incomes, setIncomes, projects, categories, peoples, curren
     });
 
   // Populated field lookups
-  const getProjectName = (income) => income.projectID?.projectName || "-";
-  const getCategoryName = (income) => income.categoryID?.categoryName || "-";
+  const getProjectName = (income) => {
+    const populatedProjectName = income.projectID?.projectName;
+    if (populatedProjectName) return populatedProjectName;
+
+    const projectId = income.projectID?._id || income.projectID;
+    const matchedProject = projects?.find(
+      (p) => String(p._id || p.id) === String(projectId),
+    );
+    return matchedProject?.projectName || "-";
+  };
+  const getCategoryName = (income) => {
+    const populatedCategoryName = income.categoryID?.categoryName;
+    if (populatedCategoryName) return populatedCategoryName;
+
+    const categoryId = income.categoryID?._id || income.categoryID;
+    const matchedCategory = categories?.find(
+      (c) => String(c._id || c.id) === String(categoryId),
+    );
+    return matchedCategory?.categoryName || "-";
+  };
   const getUserName = (income) => {
     const peopleId = income.peopleID?._id || income.peopleID;
     const userId = income.userID?._id || income.userID;

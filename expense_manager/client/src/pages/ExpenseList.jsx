@@ -16,8 +16,26 @@ function ExpenseList({ expenses, setExpenses, projects, categories, peoples, cur
     });
 
   // Populated field lookups — the server populates these refs
-  const getProjectName = (expense) => expense.projectID?.projectName || "-";
-  const getCategoryName = (expense) => expense.categoryID?.categoryName || "-";
+  const getProjectName = (expense) => {
+    const populatedProjectName = expense.projectID?.projectName;
+    if (populatedProjectName) return populatedProjectName;
+
+    const projectId = expense.projectID?._id || expense.projectID;
+    const matchedProject = projects?.find(
+      (p) => String(p._id || p.id) === String(projectId),
+    );
+    return matchedProject?.projectName || "-";
+  };
+  const getCategoryName = (expense) => {
+    const populatedCategoryName = expense.categoryID?.categoryName;
+    if (populatedCategoryName) return populatedCategoryName;
+
+    const categoryId = expense.categoryID?._id || expense.categoryID;
+    const matchedCategory = categories?.find(
+      (c) => String(c._id || c.id) === String(categoryId),
+    );
+    return matchedCategory?.categoryName || "-";
+  };
   const getUserName = (expense) => {
     const peopleId = expense.peopleID?._id || expense.peopleID;
     const userId = expense.userID?._id || expense.userID;
